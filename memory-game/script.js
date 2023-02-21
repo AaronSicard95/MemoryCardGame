@@ -101,8 +101,7 @@ function clickedTwoFunc(){
       localStorage.setItem("highScore", numGuesses.toString());
       setHS();
     }
-    foundMatches = [];
-    numGuesses = 0;
+    needsReset = true;
     resetTimer = setTimeout(resetGame, 2000);
   }else{
   needsReset = true;
