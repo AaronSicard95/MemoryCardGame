@@ -22,7 +22,6 @@ let resetTimer;
 let needsReset = false;
 let resetScoreButton = document.getElementById("resetGame");
 let resetHSButton = document.getElementById("resetHS");
-let divsCreated = false;
 // here is a helper function to shuffle an array
 // it returns the same array with values shuffled
 // it is based on an algorithm called Fisher Yates if you want ot research more
@@ -52,7 +51,6 @@ let shuffledColors = shuffle(COLORS);
 // it creates a new div and gives it a class with the value of the color
 // it also adds an event listener for a click for each card
 function createDivsForColors(colorArray) {
-  if(divsCreated==false){
   for (let color of colorArray) {
     // create a new div
     const newDiv = document.createElement("div");
@@ -66,12 +64,13 @@ function createDivsForColors(colorArray) {
     // append the div to the element with an id of game
     gameContainer.append(newDiv);
     divsCreated = true;
-  }} else {
-    let madeCards = gameContainer.children;
-    for (let i = 0; i < madeCards.length; i++){
-      madeCards[i].classList = colorArray[i];
-      console.log(`made card ${i} into ${colorArray[i]}`)
-    }
+  }
+}
+function giveDivsColors(colorArray){
+  let madeCards = gameContainer.children;
+  for (let i = 0; i < madeCards.length; i++){
+    madeCards[i].classList = colorArray[i];
+    console.log(`made card ${i} into ${colorArray[i]}`)
   }
 }
 
@@ -104,17 +103,24 @@ function clickedTwoFunc(){
     }
     foundMatches = [];
     numGuesses = 0;
-  }
+    resetTimer = setTimeout(resetGame, 2000);
+  }else{
   needsReset = true;
   resetTimer = setTimeout(reset, 2000);
+  }
 }
 
 // TODO: Implement this function!
 function handleCardClick(event) {
   // you can use event.target to see which element was clicked
   if(needsReset == true){
+    if(foundMatches.length >= 10){
+      resetGame();
+      clearTimeout(resetTimer);
+    }else{
     reset();
     clearTimeout(resetTimer);
+    }
   }
   if((firstGuess != event.target) && (clickedTwo == false)){
     let mydiv = event.target;
@@ -141,7 +147,7 @@ function resetGame(){
   numGuesses = 0;
   document.getElementById("info").innerHTML = "Try to Find Matches!";
   shuffledColors = shuffle(shuffledColors);
-  createDivsForColors(shuffledColors);
+  giveDivsColors(shuffledColors);
   
 }
 
